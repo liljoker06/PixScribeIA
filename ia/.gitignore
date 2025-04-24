@@ -1,0 +1,21 @@
+# 🔁 Ignorer tous les fichiers de poids enregistrés
+/model/epoch/
+
+# 📂 Ignorer les fichiers téléchargés du dataset CIFAR-10
+/data/*
+# ✅ MAIS garder les fichiers .txt dans data/
+!data/*.txt
+
+# 🧠 Fichiers PyTorch ou temporaires
+*.pt
+*.pth
+
+# 🗑️ Fichiers cache Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# 🛠️ Configs ou fichiers système que tu veux éviter
+*.log
+.DS_Store
+.env
