@@ -33,18 +33,7 @@ function App() {
               </Layout>
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/history"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <HistoryPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-          
+        />         
         {/* Redirection pour les routes inconnues */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
