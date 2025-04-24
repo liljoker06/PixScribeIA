@@ -1,7 +1,7 @@
 // LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useAuthStore } from '../store/authStore'
 
 export function LoginPage() {
   const [username, setUsername] = useState('');
@@ -11,6 +11,9 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
+
+  const login = useAuthStore((state) => state.login);
+  const signup = useAuthStore((state) => state.signup);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,14 +31,16 @@ export function LoginPage() {
 
     try {
       if (isLogin) {
-        // await login(email, password); // décommenter quand api prêt (et créer le login)
+        await login(email, password); 
       } else {
-        // const newUser = await signup(username, email, password); // décommenter quand api prêt (et créer le signup)
-        // await login(email, password); // décommenter quand api prêt 
+        const newUser = await signup(username, email, password); 
+        console.log("Inscription réussie :", newUser);
+        await login(email, password); 
       }
       navigate('/');
     } catch (err) {
       setError('Une erreur est survenue. Veuillez réessayer.');
+      console.error(err);
     }
   };
 
