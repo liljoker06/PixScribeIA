@@ -19,7 +19,7 @@ function ViewerPage() {
   }
 
   return (
-    <div className="p-6 flex flex-col items-center justify-center text-white">
+    <div className="p-6 flex flex-col items-center justify-center text-black bg-gray-900 min-h-screen">
       <h1 className="text-2xl font-semibold mb-4">Téléversez une image</h1>
 
       <input type="file" accept="image/*" onChange={handleUpload} className="mb-4 text-white" />
