@@ -1,6 +1,6 @@
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Image, Menu, MoreHorizontal} from "lucide-react";
+import { LogOut, Image, Menu, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 export default function SideBar() {
@@ -8,7 +8,7 @@ export default function SideBar() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [editingSearch, setEditingSearch] = useState(null);
+  const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [deleteSearch, setDeleteSearch] = useState(null);
 
   const recherchesParDate = [
@@ -21,7 +21,6 @@ export default function SideBar() {
     "Chat roux jouant avec une pelote",
     "Plage paradisiaque aux eaux turquoise",
     "Architecture moderne minimaliste",
-    "Fleur exotique en gros plan",
   ];
 
   const [recentSearches, setRecentSearches] = useState(recherchesParDate);
@@ -39,24 +38,6 @@ export default function SideBar() {
     setShowLogoutModal(false);
   };
 
-  const handleEditSearch = (search, index) => {
-    const newName = prompt("Modifier le nom de la recherche", search);
-    if (newName) {
-      const updatedSearches = [...recentSearches];
-      updatedSearches[index] = newName;
-      setRecentSearches(updatedSearches);
-    }
-  };
-
-  const handleDeleteSearch = (index) => {
-    const confirmDelete = window.confirm(
-      "Êtes-vous sûr de vouloir supprimer cette recherche ?"
-    );
-    if (confirmDelete) {
-      const updatedSearches = recentSearches.filter((_, i) => i !== index);
-      setRecentSearches(updatedSearches);
-    }
-  };
 
   return (
     <aside
@@ -98,12 +79,12 @@ export default function SideBar() {
               Historique récent
             </h2>
 
-            <div className="overflow-y-auto max-h-162">
+            <div className="overflow-y-auto max-h-250">
               <ul className="space-y-1">
                 {recentSearches.map((item, index) => (
                   <li
                     key={index}
-                    className="text-sm text-gray-300 hover:bg-gray-700 p-2 rounded-md cursor-pointer flex items-center justify-between"
+                    className="text-sm text-gray-300 hover:bg-gray-700 p-2 rounded-md cursor-pointer flex items-center justify-between relative"
                   >
                     <div className="flex items-center max-w-full overflow-hidden">
                       <span className="truncate">{item}</span>
@@ -111,27 +92,65 @@ export default function SideBar() {
 
                     {/* Trois petits points (kebab menu) */}
                     <button
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenMenuIndex(
+                          openMenuIndex === index ? null : index
+                        );
+                      }}
                       className="text-gray-400 hover:text-gray-300"
                     >
                       <MoreHorizontal size={16} />
                     </button>
 
-                    {/* Menu des actions */}
-                    <div className="absolute hidden group-hover:block">
-                      <button
-                        onClick={() => handleEditSearch(item, index)}
-                        className="text-gray-300 hover:text-white"
-                      >
-                        Modifier
-                      </button>
-                      <button
-                        onClick={() => handleDeleteSearch(index)}
-                        className="text-red-500 hover:text-white"
-                      >
-                        Supprimer
-                      </button>
-                    </div>
+                    {/* Menu contextuel */}
+                    {openMenuIndex === index && (
+                      <div className="absolute right-0 top-10 bg-gray-900 border border-gray-700 rounded-md shadow-md z-50 flex flex-col min-w-[120px]">
+                        <button
+                          onClick={() => {
+                            setDeleteSearch(index)
+                            setOpenMenuIndex(null); 
+                          }}
+                          className="flex items-center gap-2 text-sm text-red-500 hover:text-red-400 hover:bg-gray-800 px-4 py-2 text-left transition-colors duration-200"
+                        >
+                          <Trash2 size={16} />
+                          Supprimer
+                        </button>
+                      </div>
+                    )}
+                    {/* Modal de confirmation de suppression */}
+                    {deleteSearch !== null && (
+                      <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50">
+                        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-xl w-80 text-white">
+                          <h2 className="text-lg font-semibold mb-4">
+                            Supprimer cette recherche ?
+                          </h2>
+                          <p className="text-gray-300 mb-4">
+                            "{recentSearches[deleteSearch]}"
+                          </p>
+                          <div className="flex justify-between gap-3 mt-6">
+                            <button
+                              onClick={() => setDeleteSearch(null)}
+                              className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition-colors duration-200"
+                            >
+                              Annuler
+                            </button>
+                            <button
+                              onClick={() => {
+                                const updatedSearches = recentSearches.filter(
+                                  (_, i) => i !== deleteSearch
+                                );
+                                setRecentSearches(updatedSearches);
+                                setDeleteSearch(null);
+                              }}
+                              className="flex-1 bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-md transition-colors duration-200"
+                            >
+                              Supprimer
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
