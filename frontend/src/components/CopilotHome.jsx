@@ -2,6 +2,7 @@ import { useState } from 'react'
 import DropZone from './DropZone'
 import getGreeting from '../utils/hour'
 import { X, ArrowRight } from 'lucide-react'
+import { uploadImage } from '../api/img'
 
 export default function CopilotHome({ user }) {
   const [description, setDescription] = useState('')
@@ -9,18 +10,24 @@ export default function CopilotHome({ user }) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedImage) return
     setIsProcessing(true)
-    
-    const formData = new FormData()
-    formData.append('image', selectedImage)
-    
-    setTimeout(() => {
-      setDescription("Chien qui court dans un parc (simulé au cas ou)")
+  
+    try {
+      const requeteId = crypto.randomUUID() 
+      const result = await uploadImage(requeteId, selectedImage)
+  
+      setDescription(result.description || "Image bien envoyée ")
+    } catch (error) {
+      console.error(error.message)
+      setDescription("Erreur lors de l'envoi de l'image ")
+    } finally {
       setIsProcessing(false)
-    }, 2000)
+    }
   }
+  
+  
 
   const handleRemoveImage = () => {
     setImagePreview(null)
