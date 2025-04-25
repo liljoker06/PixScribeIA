@@ -13,20 +13,20 @@ export default function CopilotHome() {
   const handleSubmit = async () => {
     if (!selectedImage) return;
     setIsProcessing(true);
-  
+
     try {
       const { requeteId } = await createRequete();
-  
+
       if (!requeteId) throw new Error("Aucun ID de requête reçu");
-  
+
       console.log("Requete créée avec l'ID :", requeteId);
-  
+
       const result = await uploadImage(requeteId, selectedImage);
-  
+
       console.log("Résultat upload :", result);
-  
+
       setDescription(result.description || "Image bien envoyée");
-  
+
     } catch (error) {
       console.error("Erreur handleSubmit :", error.message);
       setDescription("Erreur lors de l'envoi de l'image");
@@ -34,10 +34,22 @@ export default function CopilotHome() {
       setIsProcessing(false);
     }
   };
-  
-  
-  
-  
+
+
+  const welcomeMessages = [
+    "Glissez-moi une image et je vous dirai ce que j’en pense 📷✨",
+    "Je suis prêt à analyser vos images, envoyez-moi du visuel 🔍",
+    "Une image vaut mille mots… et moi, je peux les écrire 🧠",
+    "Chargez une image et laissez-moi vous la décrire avec précision 🤖",
+    "Déposez une photo, je vous génère sa description en un éclair ⚡",
+    "Je suis PixScribeIA, votre copilote visuel. Allons-y ! 🧭"
+  ];
+
+  const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+
+
+
+
 
   const handleRemoveImage = () => {
     setImagePreview(null)
@@ -52,19 +64,19 @@ export default function CopilotHome() {
       {imagePreview ? (
         <div className="w-full">
           <div className="mb-6 flex justify-center relative">
-            <img 
-              src={imagePreview} 
-              alt="Image analysée" 
+            <img
+              src={imagePreview}
+              alt="Image analysée"
               className="max-h-64 object-contain rounded-lg shadow-lg"
             />
-            <button 
+            <button
               className="absolute top-2 right-2 bg-red-500 rounded-full p-1 hover:bg-red-600 transition-colors"
               onClick={handleRemoveImage}
             >
-              <X className="w-4 h-4 text-white" /> 
+              <X className="w-4 h-4 text-white" />
             </button>
           </div>
-          
+
           {/* si y'a aucuen description et que ça charge pas */}
           {!isProcessing && !description && (
             <div className="my-6 flex justify-center">
@@ -72,12 +84,12 @@ export default function CopilotHome() {
                 onClick={handleSubmit}
                 className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center text-white font-semibold"
               >
-                <ArrowRight className="w-5 h-5 mr-2" /> 
+                <ArrowRight className="w-5 h-5 mr-2" />
                 Générer la description
               </button>
             </div>
           )}
-          
+
           {/* chargement */}
           {isProcessing && (
             <div className="my-6 flex flex-col items-center">
@@ -89,7 +101,7 @@ export default function CopilotHome() {
               <p className="text-gray-700 mt-2">Analyse de l'image en cours...</p>
             </div>
           )}
-          
+
           {/* quand la description est générée */}
           {!isProcessing && description && (
             <div className="my-6">
@@ -105,15 +117,16 @@ export default function CopilotHome() {
           )}
         </div>
       ) : (
-        // quand l'image n'est pas chargé
         <>
-          <h1 className="text-3xl font-bold mb-4 text-gray-800">{getGreeting()}</h1>
-          <p className="text-lg text-gray-500 mb-8">En quoi puis-je vous aider aujourd'hui ?</p>
-          <DropZone 
-            setImagePreview={setImagePreview} 
+          <h1 className="text-3xl font-bold mb-4 text-white">{getGreeting()}</h1>
+          <p className="text-lg text-white mb-8">{randomMessage}</p>
+
+          <DropZone
+            setImagePreview={setImagePreview}
             setSelectedImage={setSelectedImage}
           />
         </>
+
       )}
     </div>
   )

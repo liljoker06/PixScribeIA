@@ -17,7 +17,7 @@ const sendImageForDescription = async (localImagePath, filename) => {
       { headers: form.getHeaders() }
     );
 
-    return response.data; // exemple : { description: "...", caption: "..." }
+    return response.data;
   } catch (error) {
     console.error("Erreur lors de l'appel à FastAPI :", error.response?.data || error.message);
     throw new Error("Erreur lors de l'appel à FastAPI");
