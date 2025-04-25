@@ -30,7 +30,7 @@ best_model_path = "model/best_model/best_model.pt"
 epoch_model_dir = "model/epoch"
 os.makedirs(epoch_model_dir, exist_ok=True)
 
-# 🔍 Fonction pour trouver le dernier modèle dans /epoch
+# Fonction pour trouver le dernier modèle dans /epoch
 def get_latest_epoch_model():
     models = [f for f in os.listdir(epoch_model_dir) if f.startswith("cnn_epoch_") and f.endswith(".pt")]
     if not models:
@@ -38,10 +38,10 @@ def get_latest_epoch_model():
     models.sort(key=lambda x: int(re.findall(r'\d+', x)[-1]), reverse=True)
     return os.path.join(epoch_model_dir, models[0])
 
-# 🧠 Initialisation du modèle
+#Initialisation du modèle
 model = MonCNN(num_classes=100).to(device)
 
-# 📦 Chargement du modèle (priorité au best_model)
+# Chargement du modèle (priorité au best_model)
 if os.path.exists(best_model_path):
     print(f"✅ Chargement du meilleur modèle : {best_model_path}")
     model.load_state_dict(torch.load(best_model_path, map_location=device))

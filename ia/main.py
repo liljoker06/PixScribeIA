@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from routes.caption_route import router as caption_router
+from routes.description_route import router as description_router
 from train.train_cnn import entrainer
 from contextlib import asynccontextmanager
 import threading
@@ -32,6 +33,7 @@ app = FastAPI(
 
 # les routes
 app.include_router(caption_router, prefix="/api/caption")
+app.include_router(description_router, prefix="/api/description")
 
 @app.get("/")
 async def root():
