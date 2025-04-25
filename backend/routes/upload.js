@@ -3,9 +3,12 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../utils/upload');
 const authMiddleware = require('../middleware/auth');
-const { uploadImageToRequete } = require('../controllers/requetesController');
+const { uploadImageToRequete, createRequete } = require('../controllers/requetesController');
 
-// Route POST pour uploader une image liée à une requête
-router.post('/upload', authMiddleware, upload.single('image'), uploadImageToRequete);
+// Créer une requête
+router.post('/', authMiddleware, createRequete);
+
+// Uploader une image avec requeteId dans l'URL
+router.post('/upload/:requeteId', authMiddleware, upload.single('image'), uploadImageToRequete);
 
 module.exports = router;

@@ -2,30 +2,40 @@ import { useState } from 'react'
 import DropZone from './DropZone'
 import getGreeting from '../utils/hour'
 import { X, ArrowRight } from 'lucide-react'
-import { uploadImage } from '../api/img'
+import { uploadImage, createRequete } from '../api/img'
 
-export default function CopilotHome({ user }) {
+export default function CopilotHome() {
   const [description, setDescription] = useState('')
   const [imagePreview, setImagePreview] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
 
   const handleSubmit = async () => {
-    if (!selectedImage) return
-    setIsProcessing(true)
+    if (!selectedImage) return;
+    setIsProcessing(true);
   
     try {
-      const requeteId = crypto.randomUUID() 
-      const result = await uploadImage(requeteId, selectedImage)
+      const { requeteId } = await createRequete();
   
-      setDescription(result.description || "Image bien envoyée ")
+      if (!requeteId) throw new Error("Aucun ID de requête reçu");
+  
+      console.log("Requete créée avec l'ID :", requeteId);
+  
+      const result = await uploadImage(requeteId, selectedImage);
+  
+      console.log("Résultat upload :", result);
+  
+      setDescription(result.description || "Image bien envoyée");
+  
     } catch (error) {
-      console.error(error.message)
-      setDescription("Erreur lors de l'envoi de l'image ")
+      console.error("Erreur handleSubmit :", error.message);
+      setDescription("Erreur lors de l'envoi de l'image");
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
+  };
+  
+  
   
   
 
