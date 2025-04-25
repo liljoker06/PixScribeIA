@@ -38,24 +38,6 @@ export default function SideBar() {
     setShowLogoutModal(false);
   };
 
-  const handleEditSearch = (search, index) => {
-    const newName = prompt("Modifier le nom de la recherche", search);
-    if (newName) {
-      const updatedSearches = [...recentSearches];
-      updatedSearches[index] = newName;
-      setRecentSearches(updatedSearches);
-    }
-  };
-
-  const handleDeleteSearch = (index) => {
-    const confirmDelete = window.confirm(
-      "Êtes-vous sûr de vouloir supprimer cette recherche ?"
-    );
-    if (confirmDelete) {
-      const updatedSearches = recentSearches.filter((_, i) => i !== index);
-      setRecentSearches(updatedSearches);
-    }
-  };
 
   return (
     <aside
