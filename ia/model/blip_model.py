@@ -1,18 +1,17 @@
 from PIL import Image
 import torch
 from transformers import BlipProcessor, BlipForConditionalGeneration
+from googletrans import Translator
 
-
-
-
-# processor et model de BLIP
-
+# Charger modèle BLIP
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
 model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
+# Initialiser traducteur
+translator = Translator()
 
 def generate_caption(image_path: str) -> str:
-    """ génére un description d'une image """
+    """Génère une description en français à partir d'une image"""
 
     try:
         image = Image.open(image_path).convert("RGB")
@@ -21,11 +20,13 @@ def generate_caption(image_path: str) -> str:
         with torch.no_grad():
             output = model.generate(**inputs)
 
-        caption = processor.decode(output[0], skip_special_tokens=True)
-        return caption
+        caption_en = processor.decode(output[0], skip_special_tokens=True)
+
+        # Traduction anglaise → française
+        traduction = translator.translate(caption_en, src='en', dest='fr').text
+
+        return traduction
+
     except Exception as e:
-        print(f"Erreur lors de la génération de la légende : {e}")
+        print(f"❌ Erreur lors de la génération de la légende : {e}")
         return None
-    
-
-
