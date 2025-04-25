@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: 'mysql', // ou 'mariadb' si tu veux être précis
+    dialect: 'mysql', 
     logging: false,
   }
 );
