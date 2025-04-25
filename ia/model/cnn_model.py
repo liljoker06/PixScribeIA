@@ -1,31 +1,22 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-
-
 class MonCNN(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes=100):
         super(MonCNN, self).__init__()
-        # Couche 1 : convolution (entrée = 3 canaux, sortie = 32)
-        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)
-        # Couche 2 : convolution (32 -> 64)
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
-        # Couche de max pooling
+        self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
+        self.bn1 = nn.BatchNorm2d(32)  # ✅ BatchNorm après conv1
+        self.conv2 = nn.Conv2d(32, 64, 3, padding=1)
+        self.bn2 = nn.BatchNorm2d(64)  # ✅ BatchNorm après conv2
         self.pool = nn.MaxPool2d(2, 2)
-        # Couche fully connected (64 * 8 * 8 → 128)
+        self.dropout = nn.Dropout(0.3)  # ✅ Dropout pour FC1
         self.fc1 = nn.Linear(64 * 8 * 8, 128)
-        # Dernière couche fully connected (128 → 10 classes)
-        self.fc2 = nn.Linear(128, 10)
+        self.fc2 = nn.Linear(128, num_classes)
 
     def forward(self, x):
-        # Bloc conv 1 + ReLU + Pool
-        x = self.pool(F.relu(self.conv1(x)))
-        # Bloc conv 2 + ReLU + Pool
-        x = self.pool(F.relu(self.conv2(x)))
-        # Aplatir (flatten)
+        x = self.pool(F.relu(self.bn1(self.conv1(x))))
+        x = self.pool(F.relu(self.bn2(self.conv2(x))))
         x = x.view(-1, 64 * 8 * 8)
-        # FC1 + ReLU
-        x = F.relu(self.fc1(x))
-        # FC2 (logits)
+        x = self.dropout(F.relu(self.fc1(x)))
         x = self.fc2(x)
         return x
