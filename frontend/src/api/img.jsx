@@ -9,7 +9,7 @@ export const uploadImage = async (requeteId, imageFile) => {
     formData.append("image", imageFile);
     formData.append("requeteId", requeteId);
 
-    const response = await axios.post(`${API_URL}/api/upload`, formData, {
+    const response = await axios.post(`${API_URL}/requete/upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -3,7 +3,9 @@ const app = express();
 const cors = require('cors');
 const uploadRoutes = require('./routes/upload'); 
 const authRoutes = require('./routes/auth');
-const { sequelize } = require('./models'); // Chargement des modèles
+const { sequelize } = require('./models');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./docs/swagger.json');
 
 const corsOptions = {
   origin: 'http://localhost:5173',
@@ -14,9 +16,10 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
-app.use('/auth', authRoutes);
-app.use('/api', uploadRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/requete', uploadRoutes);
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 (async () => {
   try {
@@ -31,7 +34,8 @@ app.use('/api', uploadRoutes);
   }
 })();
 
-const PORT = 8000;
+const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Serveur backend lancé sur http://localhost:${PORT}`);
+  console.log(`Documentation Swagger : http://localhost:${PORT}/api-docs`);
 });
