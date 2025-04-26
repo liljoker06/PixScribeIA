@@ -1,6 +1,6 @@
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Image, Menu, MoreHorizontal, Trash2 } from "lucide-react";
+import { Image, Menu, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react"; 
 import { getHistorique, deleteHistorique } from "../api/historique";
 
@@ -8,7 +8,6 @@ export default function SideBar() {
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [deleteSearch, setDeleteSearch] = useState(null);
   const [historiques, setHistoriques] = useState([]);
@@ -29,22 +28,12 @@ export default function SideBar() {
     fetchHistorique();
   }, []); 
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
   const handleNewImage = () => {
     navigate("/");
   };
 
-  const cancelLogout = () => {
-    setShowLogoutModal(false);
-  };
-
   const handleDeleteHistorique = (item, index) => {
     console.log(" suppresion - ID:", item.id);
-    // Suppression simulée sans interaction avec l'API
     setDeleteSearch(null);
   };
 
@@ -191,42 +180,6 @@ export default function SideBar() {
         </div>
       )}
 
-      {/* Déconnexion */}
-      <div className="mt-auto pt-4">
-        <hr className="border-gray-700 mb-4" />
-        <button
-          onClick={() => setShowLogoutModal(true)}
-          className="flex items-center text-red-500 hover:text-red-400 hover:bg-gray-700 p-2 rounded-md w-full"
-        >
-          <LogOut size={16} />
-          {isSidebarOpen && <span>Déconnexion</span>}
-        </button>
-      </div>
-
-      {/* Modal de confirmation de déconnexion */}
-      {showLogoutModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-md w-80 text-white">
-            <h2 className="text-lg font-semibold mb-4">
-              Êtes-vous sûr de vouloir vous déconnecter ?
-            </h2>
-            <div className="flex justify-between">
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
-              >
-                Oui, déconnecter
-              </button>
-              <button
-                onClick={cancelLogout}
-                className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md"
-              >
-                Annuler
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </aside>
   );
 }
