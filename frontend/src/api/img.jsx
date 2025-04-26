@@ -7,9 +7,9 @@ export const uploadImage = async (requeteId, imageFile) => {
   try {
     const formData = new FormData();
     formData.append("image", imageFile);
-    formData.append("requeteId", requeteId);
 
-    const response = await axios.post(`${API_URL}/api/upload`, formData, {
+    
+    const response = await axios.post(`${API_URL}/requete/upload/${requeteId}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -26,3 +26,23 @@ export const uploadImage = async (requeteId, imageFile) => {
   }
 };
 
+
+
+// create requete
+export const createRequete = async () => {
+  try {
+    const response = await axios.post(`${API_URL}/requete`, {}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Erreur Axios :", error.response.data);
+      throw new Error(error.response.data.message || "Erreur lors de la création de la requête");
+    }
+    throw new Error("Erreur lors de la création de la requête");
+  }
+};
