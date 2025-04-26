@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const uploadRoutes = require('./routes/upload'); 
 const authRoutes = require('./routes/auth');
+const historiqueRoutes = require('./routes/historiques');
 const { sequelize } = require('./models');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./docs/swagger.json');
@@ -18,6 +19,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/requete', uploadRoutes);
+app.use('/api/historique', historiqueRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

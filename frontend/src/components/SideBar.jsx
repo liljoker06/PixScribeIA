@@ -1,7 +1,8 @@
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Image, Menu, MoreHorizontal, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react"; 
+import { getHistorique, deleteHistorique } from "../api/historique";
 
 export default function SideBar() {
   const logout = useAuthStore((state) => state.logout);
@@ -10,20 +11,23 @@ export default function SideBar() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [deleteSearch, setDeleteSearch] = useState(null);
+  const [historiques, setHistoriques] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const recherchesParDate = [
-    "Chien qui court dans l'eau",
-    "Portrait artistique noir et blanc",
-    "Forêt tropicale au lever du soleil",
-    "Ciel étoilé avec aurore boréale",
-    "Montagne enneigée au coucher du soleil",
-    "Paysage urbain nocturne",
-    "Chat roux jouant avec une pelote",
-    "Plage paradisiaque aux eaux turquoise",
-    "Architecture moderne minimaliste",
-  ];
-
-  const [recentSearches, setRecentSearches] = useState(recherchesParDate);
+  useEffect(() => {
+    const fetchHistorique = async () => {
+      try {
+        setLoading(true);
+        const data = await getHistorique();
+        setHistoriques(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'historique :", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHistorique();
+  }, []); 
 
   const handleLogout = () => {
     logout();
@@ -38,6 +42,22 @@ export default function SideBar() {
     setShowLogoutModal(false);
   };
 
+  const handleDeleteHistorique = (item, index) => {
+    console.log(" suppresion - ID:", item.id);
+    // Suppression simulée sans interaction avec l'API
+    setDeleteSearch(null);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', { 
+      day: 'numeric',
+      month: 'short', 
+      hour: '2-digit', 
+      minute: '2-digit'
+    });
+  };
 
   return (
     <aside
@@ -80,80 +100,92 @@ export default function SideBar() {
             </h2>
 
             <div className="overflow-y-auto max-h-250">
-              <ul className="space-y-1">
-                {recentSearches.map((item, index) => (
-                  <li
-                    key={index}
-                    className="text-sm text-gray-300 hover:bg-gray-700 p-2 rounded-md cursor-pointer flex items-center justify-between relative"
-                  >
-                    <div className="flex items-center max-w-full overflow-hidden">
-                      <span className="truncate">{item}</span>
-                    </div>
-
-                    {/* Trois petits points (kebab menu) */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenMenuIndex(
-                          openMenuIndex === index ? null : index
-                        );
-                      }}
-                      className="text-gray-400 hover:text-gray-300"
+              {loading ? (
+                <p className="text-sm text-gray-400 p-2">Chargement...</p>
+              ) : historiques.length === 0 ? (
+                <p className="text-sm text-gray-400 p-2">Aucun historique disponible</p>
+              ) : (
+                <ul className="space-y-1">
+                  {historiques.map((item, index) => (
+                    <li
+                      key={item.id || index}
+                      className="text-sm text-gray-300 hover:bg-gray-700 p-2 rounded-md cursor-pointer flex items-center justify-between relative"
                     >
-                      <MoreHorizontal size={16} />
-                    </button>
-
-                    {/* Menu contextuel */}
-                    {openMenuIndex === index && (
-                      <div className="absolute right-0 top-10 bg-gray-900 border border-gray-700 rounded-md shadow-md z-50 flex flex-col min-w-[120px]">
-                        <button
-                          onClick={() => {
-                            setDeleteSearch(index)
-                            setOpenMenuIndex(null); 
-                          }}
-                          className="flex items-center gap-2 text-sm text-red-500 hover:text-red-400 hover:bg-gray-800 px-4 py-2 text-left transition-colors duration-200"
-                        >
-                          <Trash2 size={16} />
-                          Supprimer
-                        </button>
+                      <div className="flex flex-col max-w-[80%] overflow-hidden">
+                        <span className="truncate font-medium">
+                          {item.requete?.description || `Action: ${item.action}`}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          {formatDate(item.timestamp)}
+                        </span>
                       </div>
-                    )}
-                    {/* Modal de confirmation de suppression */}
-                    {deleteSearch !== null && (
-                      <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50">
-                        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-xl w-80 text-white">
-                          <h2 className="text-lg font-semibold mb-4">
-                            Supprimer cette recherche ?
-                          </h2>
-                          <p className="text-gray-300 mb-4">
-                            "{recentSearches[deleteSearch]}"
-                          </p>
-                          <div className="flex justify-between gap-3 mt-6">
-                            <button
-                              onClick={() => setDeleteSearch(null)}
-                              className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition-colors duration-200"
-                            >
-                              Annuler
-                            </button>
-                            <button
-                              onClick={() => {
-                                const updatedSearches = recentSearches.filter(
-                                  (_, i) => i !== deleteSearch
-                                );
-                                setRecentSearches(updatedSearches);
-                                setDeleteSearch(null);
-                              }}
-                              className="flex-1 bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-md transition-colors duration-200"
-                            >
-                              Supprimer
-                            </button>
+
+                      {/* Trois petits points (kebab menu) */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log("Requête élément:", index, "ID:", item.id);
+                          setOpenMenuIndex(
+                            openMenuIndex === index ? null : index
+                          );
+                        }}
+                        className="text-gray-400 hover:text-gray-300"
+                      >
+                        <MoreHorizontal size={16} />
+                      </button>
+
+                      {/* Menu contextuel */}
+                      {openMenuIndex === index && (
+                        <div className="absolute right-0 top-10 bg-gray-900 border border-gray-700 rounded-md shadow-md z-50 flex flex-col min-w-[120px]">
+                          <button
+                            onClick={() => {
+                              console.log("id supprimé", item.id);
+                              setDeleteSearch(index);
+                              setOpenMenuIndex(null); 
+                            }}
+                            className="flex items-center gap-2 text-sm text-red-500 hover:text-red-400 hover:bg-gray-800 px-4 py-2 text-left transition-colors duration-200"
+                          >
+                            <Trash2 size={16} />
+                            Supprimer
+                          </button>
+                        </div>
+                      )}
+                      
+                      {/* Modal de confirmation de suppression */}
+                      {deleteSearch === index && (
+                        <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50">
+                          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-xl w-80 text-white">
+                            <h2 className="text-lg font-semibold mb-4">
+                              Supprimer cet élément ?
+                            </h2>
+                            <p className="text-gray-300 mb-4">
+                              {item.requete?.description || `Action: ${item.action}`}
+                            </p>
+                            <div className="flex justify-between gap-3 mt-6">
+                              <button
+                                onClick={() => {
+                                  // setDeleteSearch(null);
+                                }}
+                                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition-colors duration-200"
+                              >
+                                Annuler
+                              </button>
+                              <button
+                                onClick={() => {
+                                  handleDeleteHistorique(item, index);
+                                }}
+                                className="flex-1 bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-md transition-colors duration-200"
+                              >
+                                Supprimer
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
