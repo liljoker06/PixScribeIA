@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { Image, Menu, MoreHorizontal, Trash2 } from "lucide-react";
+import { Image, Menu, MoreHorizontal, Trash2, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getHistorique, deleteHistorique } from "../api/historique";
 
-export default function SideBar() {
+export default function Sidebar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [historiques, setHistoriques] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,6 +30,10 @@ export default function SideBar() {
 
   const handleNewImage = () => {
     navigate("/");
+    // Sur mobile, fermer automatiquement la sidebar après une navigation
+    if (window.innerWidth < 640) {
+      setIsOpen(false);
+    }
   };
 
   const handleDeleteHistorique = async (item, index) => {
@@ -58,37 +61,48 @@ export default function SideBar() {
 
   return (
     <>
+      {/* Mobile overlay when sidebar is open */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      
+      {/* Mobile & Desktop Sidebar */}
       <aside
-        className={`${
-          isSidebarOpen ? "w-64" : "w-16"
-        } bg-gray-800 min-h-screen fixed left-0 top-0 flex flex-col p-4 border-r border-gray-700 transition-all duration-300 ease-in-out z-40`}
+        className={`fixed inset-y-0 left-0 z-40 bg-gray-800 flex flex-col p-4 border-r border-gray-700 transition-all duration-300 ease-in-out
+          ${isOpen ? "translate-x-0 w-64" : "-translate-x-full sm:translate-x-0 sm:w-16"}
+        `}
       >
         <div className="mb-6 flex justify-between items-center">
-          {isSidebarOpen && (
+          {isOpen && (
             <h1 className="text-xl font-bold text-white">PixScribeIA</h1>
           )}
-          {/* retraction sidebar */}
+          {/* Toggle sidebar button */}
           <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            onClick={() => setIsOpen(!isOpen)}
             className={`text-white hover:bg-gray-700 p-1 rounded ${
-              isSidebarOpen ? "" : "mx-auto"
+              isOpen ? "" : "mx-auto"
             }`}
           >
-            <Menu size={20} />
+            {isOpen ? <X size={20} className="sm:hidden" /> : null}
+            <Menu size={20} className={isOpen ? "hidden sm:block" : ""} />
           </button>
         </div>
+        
         {/* Nouvelle image */}
         <button
           onClick={handleNewImage}
           className={`flex items-center ${
-            isSidebarOpen ? "space-x-2" : "justify-center"
+            isOpen ? "space-x-2" : "justify-center"
           } w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md mb-6 transition`}
         >
           <Image size={18} />
-          {isSidebarOpen && <span>Nouvelle image</span>}
+          {isOpen && <span>Nouvelle image</span>}
         </button>
 
-        {isSidebarOpen && (
+        {isOpen && (
           <div className="flex flex-col overflow-hidden flex-grow">
             <div className="mb-4 flex-grow">
               <h2 className="text-xs uppercase font-semibold text-gray-400 mb-2 px-1">
