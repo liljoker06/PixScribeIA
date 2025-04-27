@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { getHistoriqueDetails } from "../api/historique";
+
 
 export default function HistoryPage() {
   const { id } = useParams();

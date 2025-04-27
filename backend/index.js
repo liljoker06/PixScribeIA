@@ -22,10 +22,19 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/requete', uploadRoutes);
 app.use('/api/historique', historiqueRoutes);
+app.use('/api/upload', uploadRoutes); 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+
+
+// le fond est bon mais la structure à revoir /////// 
+// proposition : mettre le code dans un controller exemple historiqueController.js 
+// ensuite créer une route dans l'historique.js et l'importer dans le fichier index.js 
+// 
 app.get('/api/images/:imagePath', (req, res) => {
   console.log("Image path requested:", req.params.imagePath);
   const imagePath = path.join(__dirname, req.params.imagePath);

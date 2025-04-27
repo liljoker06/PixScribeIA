@@ -13,20 +13,22 @@ export default function CopilotHome() {
   const handleSubmit = async () => {
     if (!selectedImage) return;
     setIsProcessing(true);
-
+  
     try {
       const { requeteId } = await createRequete();
-
       if (!requeteId) throw new Error("Aucun ID de requête reçu");
-
+  
       console.log("Requete créée avec l'ID :", requeteId);
-
+  
       const result = await uploadImage(requeteId, selectedImage);
-
+  
       console.log("Résultat upload :", result);
-
+  
       setDescription(result.description || "Image bien envoyée");
-
+  
+      
+      window.dispatchEvent(new Event('historiqueUpdated'));
+  
     } catch (error) {
       console.error("Erreur handleSubmit :", error.message);
       setDescription("Erreur lors de l'envoi de l'image");
@@ -34,6 +36,7 @@ export default function CopilotHome() {
       setIsProcessing(false);
     }
   };
+  
 
   const welcomeMessages = [
     "Glissez-moi une image et je vous dirai ce que j'en pense 📷✨",
