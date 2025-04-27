@@ -76,8 +76,39 @@ const deleteHistorique = async (requeteId) => {
   }
 };
 
+const getOneHistorique = async (req, res) => {
+  const { id } = req.params;
+  console.log(`Tentative de récupération de l'historique avec ID: ${id}`);
+  console.log(`UserID: ${req.userId}`);
+  
+  try {
+    const historique = await Historique.findOne({
+      where: { id, userId: req.userId },
+      include: [
+        { model: Requete, as: 'requete', attributes: ['description'] },
+        { model: Image, as: 'image', attributes: ['imagePath'] }
+      ]
+    });
+
+    if (!historique) {
+      console.log(`Aucun historique trouvé avec ID: ${id} pour l'utilisateur: ${req.userId}`);
+      return res.status(404).json({ message: "Historique non trouvé" });
+    }
+
+    console.log(`Historique trouvé:`, JSON.stringify(historique, null, 2));
+    res.json({
+      description: historique.requete?.description || '',
+      imagePath: historique.image?.imagePath || ''
+    });
+  } catch (error) {
+    console.error("Erreur lors de la récupération d'un historique :", error);
+    res.status(500).json({ error: "Erreur serveur", details: error.message });
+  }
+};
+
 module.exports = {
   createHistorique,
   getFullHistorique,
-  deleteHistorique
+  deleteHistorique,
+  getOneHistorique
 };

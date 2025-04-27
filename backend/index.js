@@ -7,6 +7,8 @@ const historiqueRoutes = require('./routes/historiques');
 const { sequelize } = require('./models');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./docs/swagger.json');
+const path = require('path');
+const fs = require('fs');
 
 const corsOptions = {
   origin: 'http://localhost:5173',
@@ -22,6 +24,22 @@ app.use('/api/requete', uploadRoutes);
 app.use('/api/historique', historiqueRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.get('/api/images/:imagePath', (req, res) => {
+  console.log("Image path requested:", req.params.imagePath);
+  const imagePath = path.join(__dirname, req.params.imagePath);
+  console.log("Full image path:", imagePath);
+  
+  // Vérifier si le fichier existe
+  if (!fs.existsSync(imagePath)) {
+    console.error("File not found:", imagePath);
+    return res.status(404).send("Image not found");
+  }
+  
+  res.sendFile(imagePath);
+});
+
 
 (async () => {
   try {
