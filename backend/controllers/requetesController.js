@@ -114,34 +114,42 @@ const deleteAllUserImages = async (req, res) => {
     if (images.length === 0) {
       return res.status(404).json({ message: '❌ Aucune image trouvée pour cet utilisateur.' });
     }
-
     for (const img of images) {
       const absoluteImagePath = path.join(__dirname, '..', img.imagePath);
       fs.unlink(absoluteImagePath, (err) => {
         if (err) {
           if (err.code === 'ENOENT') {
-            console.warn(`⚠️ Le fichier ${img.imagePath} n'existait déjà plus.`);
+            console.warn(`Le fichier ${img.imagePath} n'existait déjà plus.`);
           } else {
             console.error(`❗ Impossible de supprimer ${img.imagePath}:`, err.message);
           }
         } else {
-          console.log(`✅ Fichier supprimé : ${img.imagePath}`);
+          console.log(`Fichier supprimé : ${img.imagePath}`);
         }
       });
     }
 
     await Historique.destroy({ where: { userId } });
-
     await Image.destroy({ where: { userId } });
-
     await Requete.destroy({ where: { userId } });
 
-    res.status(200).json({ message: 'Toutes les images et historiques de l\'utilisateur ont été supprimés.' });
+    const userFolderPath = path.join(__dirname, '..', 'uploads', 'images', String(userId));
+    fs.rm(userFolderPath, { recursive: true, force: true }, (err) => {
+      if (err) {
+        console.error(`Impossible de supprimer le dossier de l'utilisateur ${userId}:`, err.message);
+      } else {
+        console.log(`Dossier supprimé pour l'utilisateur ${userId}`);
+      }
+    });
+
+    res.status(200).json({ message: 'Toutes les images, historiques et dossiers de l\'utilisateur ont été supprimés.' });
+
   } catch (error) {
-    console.error('❌ Erreur lors de la suppression des images utilisateur :', error);
+    console.error('Erreur lors de la suppression des images utilisateur :', error);
     res.status(500).json({ message: 'Erreur serveur', details: error.message });
   }
 };
+
 
 
 
