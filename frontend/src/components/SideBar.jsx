@@ -137,13 +137,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         </div>
 
         {/* Nouveau bouton */}
-        <button
-          onClick={handleNewImage}
-          className={`flex items-center ${isOpen ? "space-x-2" : "justify-center"} w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md mb-6`}
-        >
-          <Image size={18} />
-          {isOpen && <span>Nouvelle image</span>}
-        </button>
+        {isOpen && (
+  <button
+    onClick={handleNewImage}
+    className="flex items-center space-x-2 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md mb-6"
+  >
+    <Image size={18} />
+    <span>Nouvelle image</span>
+  </button>
+)}
+
 
         {/* Historique */}
         {isOpen && (
