@@ -4,12 +4,19 @@ import torch.nn as nn
 import torch.optim as optim
 from model.cnn_model import MonCNN
 from train.data_loader import charger_cifar100
-import torch_directml
+# import torch_directml
 import matplotlib.pyplot as plt
 import csv
 
 # Utiliser le GPU AMD via DirectML
-device = torch_directml.device()
+# device = torch_directml.device()
+
+try:
+    import torch_directml
+    dml = torch_directml.device()
+    device = dml
+except (ImportError, OSError):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Hyperparamètres
 batch_size = 64
