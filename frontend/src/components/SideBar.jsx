@@ -79,10 +79,13 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       await deleteletAllUserRequete();
       setHistoriques([]);
       setConfirmDeleteAll(false);
+      window.location.reload();
+  
     } catch (error) {
       console.error("Erreur lors de la suppression de tout l'historique :", error.message);
     }
   };
+  
 
   const handlDeleteRequete = async (id) => {
     try {
