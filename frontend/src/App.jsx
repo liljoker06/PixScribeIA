@@ -36,6 +36,17 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         {/* Routes protégées avec Layout */}
+        <Route 
+          path="/historique/:id" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <HistoryPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        
         <Route
           path="/"
           element={
