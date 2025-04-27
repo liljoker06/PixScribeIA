@@ -56,7 +56,7 @@ export default function CopilotHome() {
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100vh-80px)] text-center px-3 sm:px-4 w-full">
       {/* Container avec arrière-plan coloré */}
-      <div className="w-full max-w-xl sm:max-w-2xl bg-grey-500 bg-opacity-50 rounded-lg shadow-lg py-6 px-3 sm:px-4">
+      <div className="w-full max-w-xl sm:max-w-2xl bg-grey-500 bg-opacity-50 rounded-lg py-6 px-3 sm:px-4">
         {/* quand l'image est chargée */}
         {imagePreview ? (
           <div className="w-full">

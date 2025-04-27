@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
-const { getFullHistorique, deleteHistorique } = require('../controllers/historiqueController');
+const { getFullHistorique, getOneHistorique, deleteHistorique } = require('../controllers/historiqueController');
 
 // Récupérer l'historique complet d'un utilisateur
 router.get('/', authMiddleware, getFullHistorique);
+
+router.get('/:id', authMiddleware, getOneHistorique);
 
 router.delete('/:requeteId', authMiddleware, async (req, res) => {
     const { requeteId } = req.params;

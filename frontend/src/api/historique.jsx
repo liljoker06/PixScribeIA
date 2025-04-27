@@ -57,3 +57,21 @@ export const deleteHistorique = async (requeteId) => {
     throw new Error("Erreur lors de la suppression de l'historique: " + (error.message || "Erreur inconnue"));
   }
 };
+
+export const getHistoriqueDetails = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/historique/${id}`, { 
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    // console.log("Réponse API", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur complète:", error);
+    if (error.response) {
+      console.error("Réponse d'erreur:", error.response.status, error.response.data);
+    }
+    throw new Error("Erreur lors de la récupération des détails");
+  }
+};
