@@ -1,6 +1,6 @@
 const path = require('path');
 const { sendImageForDescription } = require('../services/fastapi');
-const { Image, Requete } = require('../models');
+const { Image, Requete, Historique } = require('../models');
 const { createHistorique } = require('./historiqueController');
 
 const uploadImageToRequete = async (req, res) => {
@@ -66,7 +66,46 @@ const createRequete = async (req, res) => {
 };
 
 
+
+const deleteRequete = async (req, res) => {
+  const { requeteId } = req.params;
+  const userId = req.userId;
+
+  try {
+    const requete = await Requete.findOne({ where: { id: requeteId, userId } });
+    if (!requete) {
+      return res.status(404).json({ message: '❌ Requête non trouvée.' });
+    }
+
+    const images = await Image.findAll({ where: { requeteId } });
+
+    for (const img of images) {
+      const absoluteImagePath = path.join(__dirname, '..', 'public', img.imagePath);
+      fs.unlink(absoluteImagePath, (err) => {
+        if (err) {
+          console.error(`❗ Impossible de supprimer le fichier ${img.imagePath}:`, err.message);
+        } else {
+          console.log(`✅ Fichier supprimé : ${img.imagePath}`);
+        }
+      });
+    }
+
+    await Historique.destroy({ where: { requeteId } });
+
+    await Image.destroy({ where: { requeteId } });
+
+    await Requete.destroy({ where: { id: requeteId } });
+
+    res.status(200).json({ message: '✅ Requête, images et historiques supprimés avec succès.' });
+  } catch (error) {
+    console.error('❌ Erreur lors de la suppression de la requête :', error);
+    res.status(500).json({ message: 'Erreur serveur', details: error.message });
+  }
+};
+
+
 module.exports = {
     uploadImageToRequete,
     createRequete,
+    deleteRequete,
 };
