@@ -27,22 +27,22 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         setLoading(false);
       }
     };
-  
-    fetchHistorique(); 
-  
-    
+
+    fetchHistorique();
+
+
     const handleHistoriqueUpdate = () => {
       console.log("Event 'historiqueUpdated' reçu !");
       fetchHistorique();
     };
-  
+
     window.addEventListener('historiqueUpdated', handleHistoriqueUpdate);
-  
+
     return () => {
       window.removeEventListener('historiqueUpdated', handleHistoriqueUpdate);
     };
   }, []);
-  
+
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -80,12 +80,12 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       setHistoriques([]);
       setConfirmDeleteAll(false);
       window.location.reload();
-  
+
     } catch (error) {
       console.error("Erreur lors de la suppression de tout l'historique :", error.message);
     }
   };
-  
+
 
   const handlDeleteRequete = async (id) => {
     try {
@@ -138,14 +138,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
         {/* Nouveau bouton */}
         {isOpen && (
-  <button
-    onClick={handleNewImage}
-    className="flex items-center space-x-2 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md mb-6"
-  >
-    <Image size={18} />
-    <span>Nouvelle image</span>
-  </button>
-)}
+          <button
+            onClick={handleNewImage}
+            className="flex items-center space-x-2 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md mb-6"
+          >
+            <Image size={18} />
+            <span>Nouvelle image</span>
+          </button>
+        )}
 
 
         {/* Historique */}
