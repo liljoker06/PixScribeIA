@@ -1,7 +1,8 @@
 <p align="center">
   <img src="./assets/logo_pixscribe.png" alt="PixScribeIA Logo" width="200"/>
 </p>
-# 📸 PixScribeIA – Générateur de descriptions d'images par IA
+
+## 📸 PixScribeIA – Générateur de descriptions d'images par IA
 
 **PixScribeIA** est une application intelligente qui génère automatiquement des descriptions d’images.  
 Elle combine :
