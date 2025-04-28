@@ -126,5 +126,17 @@ MYSQL_DATABASE=cours-mia
 
 ## ✈️ Licence
 
+---
+
+## 🍏 Version MacOS disponible
+
+> Si vous êtes sur **MacOS** (Apple Silicon ou Intel), une branche spécifique est disponible pour un déploiement optimisé :
+
+🔗 [Accéder à la branche macOS](https://github.com/liljoker06/PixScribeIA/tree/macOS)
+
+---
+
+
+
 MIT License
 
