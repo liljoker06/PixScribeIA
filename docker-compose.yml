@@ -1,0 +1,67 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: pixscribe_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    command: npm run dev -- --host 0.0.0.0
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    container_name: pixscribe_backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./backend/uploads:/app/uploads
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - ia
+
+  ia:
+    build:
+      context: ./ia
+    container_name: pixscribe_ia
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ia:/app
+    env_file:
+      - .env
+
+  db:
+    image: mysql:8.0
+    container_name: pixscribe_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pixscribe_phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+
+volumes:
+  db_data:

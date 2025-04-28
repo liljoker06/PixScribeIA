@@ -6,26 +6,17 @@
     "description": "Documentation de l'API PixScribeIA"
   },
   "servers": [
-    {
-      "url": "http://localhost:5000"
-    }
+    { "url": "http://localhost:5000" }
   ],
   "tags": [
-    {
-      "name": "Auth",
-      "description": "Gestion des utilisateurs"
-    },
-    {
-      "name": "Requetes",
-      "description": "Gestion des requêtes et des images"
-    }
+    { "name": "Auth", "description": "Gestion des utilisateurs" },
+    { "name": "Requetes", "description": "Gestion des requêtes et des images" },
+    { "name": "Historique", "description": "Gestion de l'historique utilisateur" }
   ],
   "paths": {
     "/api/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Inscription d'un utilisateur",
         "requestBody": {
           "required": true,
@@ -33,41 +24,25 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "username",
-                  "email",
-                  "password"
-                ],
+                "required": ["username", "email", "password"],
                 "properties": {
-                  "username": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
+                  "username": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
                 }
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "Utilisateur créé"
-          },
-          "500": {
-            "description": "Erreur lors de la création du compte"
-          }
+          "201": { "description": "✅ Utilisateur créé" },
+          "500": { "description": "❌ Erreur lors de la création du compte" }
         }
       }
     },
     "/api/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Connexion d'un utilisateur",
         "requestBody": {
           "required": true,
@@ -75,76 +50,60 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
+                "required": ["email", "password"],
                 "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Connexion réussie"
-          },
-          "401": {
-            "description": "Erreur d'identifiants"
-          }
+          "200": { "description": "✅ Connexion réussie" },
+          "401": { "description": "❌ Identifiants invalides" }
         }
       }
     },
     "/api/requete": {
       "post": {
-        "tags": [
-          "Requetes"
-        ],
+        "tags": ["Requetes"],
         "summary": "Créer une nouvelle requête",
-        "security": [
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
           {
-            "bearerAuth": []
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "example": "Bearer <token>" },
+            "description": "Token JWT pour authentification"
           }
         ],
         "responses": {
-          "201": {
-            "description": "Requête créée"
-          },
-          "401": {
-            "description": "Non autorisé"
-          },
-          "500": {
-            "description": "Erreur serveur"
-          }
+          "201": { "description": "✅ Requête créée" },
+          "401": { "description": "❌ Token manquant ou invalide" },
+          "500": { "description": "❌ Erreur serveur" }
         }
       }
     },
     "/api/requete/upload/{requeteId}": {
       "post": {
-        "tags": [
-          "Requetes"
-        ],
-        "summary": "Uploader une image liée à une requête (avec ID dans l'URL)",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "tags": ["Requetes"],
+        "summary": "Uploader une image liée à une requête",
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "example": "Bearer <token>" }
+          },
           {
             "name": "requeteId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID de la requête à associer à l'image"
+            "schema": { "type": "string" },
+            "description": "ID de la requête"
           }
         ],
         "requestBody": {
@@ -153,14 +112,11 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "image"
-                ],
                 "properties": {
                   "image": {
                     "type": "string",
                     "format": "binary",
-                    "description": "Fichier image à uploader"
+                    "description": "Image à uploader"
                   }
                 }
               }
@@ -168,18 +124,102 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "✅ Image téléchargée et associée à la requête."
+          "200": { "description": "✅ Image uploadée avec succès" },
+          "400": { "description": "❌ Aucune image fournie" },
+          "404": { "description": "❌ Requête non trouvée" },
+          "500": { "description": "❌ Erreur serveur" }
+        }
+      }
+    },
+    "/api/requete/{requeteId}": {
+      "delete": {
+        "tags": ["Requetes"],
+        "summary": "Supprimer une requête et ses images",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "example": "Bearer <token>" }
           },
-          "400": {
-            "description": "❌ Requête invalide ou fichier manquant"
-          },
-          "404": {
-            "description": "❌ Requête introuvable"
-          },
-          "500": {
-            "description": "❌ Erreur serveur"
+          {
+            "name": "requeteId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
           }
+        ],
+        "responses": {
+          "200": { "description": "✅ Requête supprimée" },
+          "404": { "description": "❌ Requête introuvable" },
+          "500": { "description": "❌ Erreur serveur" }
+        }
+      }
+    },
+    "/api/requete/images/user": {
+      "delete": {
+        "tags": ["Requetes"],
+        "summary": "Supprimer toutes les images d'un utilisateur",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "example": "Bearer <token>" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "✅ Images utilisateur supprimées" },
+          "404": { "description": "❌ Aucune image trouvée" },
+          "500": { "description": "❌ Erreur serveur" }
+        }
+      }
+    },
+    "/api/historique": {
+      "get": {
+        "tags": ["Historique"],
+        "summary": "Récupérer l'historique complet",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "example": "Bearer <token>" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "✅ Historique récupéré" },
+          "401": { "description": "❌ Token manquant ou invalide" },
+          "500": { "description": "❌ Erreur serveur" }
+        }
+      }
+    },
+    "/api/historique/{id}": {
+      "get": {
+        "tags": ["Historique"],
+        "summary": "Récupérer un historique précis",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "example": "Bearer <token>" }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "✅ Historique trouvé" },
+          "404": { "description": "❌ Historique introuvable" },
+          "500": { "description": "❌ Erreur serveur" }
         }
       }
     }

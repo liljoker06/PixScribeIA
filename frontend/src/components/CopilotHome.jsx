@@ -99,15 +99,15 @@ export default function CopilotHome() {
                   <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                 </div>
-                <p className="text-sm sm:text-base text-gray-700 mt-2">Analyse de l'image en cours...</p>
+                <p className="text-sm sm:text-base text-white mt-2">Analyse de l'image en cours...</p>
               </div>
             )}
 
             {/* quand la description est générée */}
             {!isProcessing && description && (
               <div className="my-4 sm:my-6">
-                <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-800">Description générée</h2>
-                <p className="text-base sm:text-lg text-gray-700">{description}</p>
+                <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-white">Description générée</h2>
+                <p className="text-base sm:text-lg text-white">{description}</p>
                 <button
                   onClick={handleRemoveImage}
                   className="mt-4 px-3 sm:px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium sm:font-semibold text-sm sm:text-base"
