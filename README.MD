@@ -1,4 +1,8 @@
-# 📸 PixScribeIA – Générateur de descriptions d'images par IA
+<p align="center">
+  <img src="./assets/logo_pixscribe.png" alt="PixScribeIA Logo" width="200"/>
+</p>
+
+## 📸 PixScribeIA – Générateur de descriptions d'images par IA
 
 **PixScribeIA** est une application intelligente qui génère automatiquement des descriptions d’images.  
 Elle combine :
@@ -96,6 +100,23 @@ MYSQL_DATABASE=cours-mia
 - 👨‍🎓 Projet éducatif pour enfants et malvoyants
 
 ---
+
+## 📸 Aperçu de l'application
+
+### 🏠 Page d'accueil
+![Accueil](./assets/screenshot-home.png)
+
+### 📤 Upload d'une image
+![Upload](./assets/screenshot-upload.png)
+
+### 📝 Résultat : description générée
+![Résultat](./assets/screenshot-result.png)
+
+### 🕓 Historique des requêtes
+![Historique](./assets/screenshot-history.png)
+
+- 📄 Retrouver facilement vos anciennes requêtes
+- 👁️‍🗨️ Aperçu complet de l'image et de la description générée en cliquant sur un élément de l'historique
 
 ## 🚀 Créé avec passion par l'équipe PixScribeIA 👩‍💻👨‍💻👦‍💻👨‍💻
 
