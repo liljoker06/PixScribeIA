@@ -115,6 +115,9 @@ MYSQL_DATABASE=cours-mia
 ### 🕓 Historique des requêtes
 ![Historique](./assets/screenshot-history.png)
 
+- 📄 Retrouver facilement vos anciennes requêtes
+- 👁️‍🗨️ Aperçu complet de l'image et de la description générée en cliquant sur un élément de l'historique
+
 ## 🚀 Créé avec passion par l'équipe PixScribeIA 👩‍💻👨‍💻👦‍💻👨‍💻
 
 *Feel free to fork, star, and contribute!*
