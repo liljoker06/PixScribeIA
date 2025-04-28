@@ -1,5 +1,6 @@
 services:
   frontend:
+    platform: linux/amd64
     build:
       context: ./frontend
     container_name: pixscribe_frontend
@@ -15,11 +16,12 @@ services:
       - backend
 
   backend:
+    platform: linux/amd64
     build:
       context: ./backend
     container_name: pixscribe_backend
     ports:
-      - "5000:5000"
+      - "5001:5000"
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -33,6 +35,8 @@ services:
   ia:
     build:
       context: ./ia
+      dockerfile: Dockerfile
+    platform: linux/amd64  # <-- AJOUTE ÇA ICI
     container_name: pixscribe_ia
     ports:
       - "8000:8000"
@@ -53,6 +57,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
     container_name: pixscribe_phpmyadmin
     restart: always
     ports:
