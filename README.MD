@@ -101,6 +101,20 @@ MYSQL_DATABASE=cours-mia
 
 ---
 
+## 📸 Aperçu de l'application
+
+### 🏠 Page d'accueil
+![Accueil](./assets/screenshot-home.png)
+
+### 📤 Upload d'une image
+![Upload](./assets/screenshot-upload.png)
+
+### 📝 Résultat : description générée
+![Résultat](./assets/screenshot-result.png)
+
+### 🕓 Historique des requêtes
+![Historique](./assets/screenshot-history.png)
+
 ## 🚀 Créé avec passion par l'équipe PixScribeIA 👩‍💻👨‍💻👦‍💻👨‍💻
 
 *Feel free to fork, star, and contribute!*
