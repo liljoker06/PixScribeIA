@@ -4,14 +4,23 @@ import torch
 import torchvision.transforms as transforms
 from model.cnn_model import MonCNN
 from train.train_cnn import entrainer
-import torch_directml
 import json
 import os
 import re
 import subprocess
 
-# Device DirectML pour GPU AMD
-device = torch_directml.device()
+# Gestion du device en fonction de l'OS
+if os.name == "nt":  # Si Windows ➔ tenter d'utiliser torch_directml
+    try:
+        import torch_directml
+        device = torch_directml.device()
+        print("✅ torch_directml activé sur Windows.")
+    except ImportError:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print("⚠️ torch_directml non trouvé, fallback sur CUDA/CPU.")
+else:  # Si Linux ➔ utiliser directement torch classique
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("✅ Utilisation de CUDA/CPU sur Linux.")
 
 # Chargement des classes en français
 def load_cifar100_labels(path="utils/json/cifar100_labels_fr.json"):

@@ -20,7 +20,7 @@ function Layout({ children }) {
   }, []);
 
   return (
-    <div className="flex flex-col sm:flex-row">
+    <div className="flex flex-col sm:flex-row bg-gray-900">
       <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className={`flex-1 min-h-screen bg-gray-900 transition-all duration-300 ${isSidebarOpen ? 'sm:ml-64' : 'sm:ml-16'}`}>
         {children}
@@ -36,6 +36,17 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         {/* Routes protégées avec Layout */}
+        <Route 
+          path="/historique/:id" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <HistoryPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        
         <Route
           path="/"
           element={

@@ -13,20 +13,22 @@ export default function CopilotHome() {
   const handleSubmit = async () => {
     if (!selectedImage) return;
     setIsProcessing(true);
-
+  
     try {
       const { requeteId } = await createRequete();
-
       if (!requeteId) throw new Error("Aucun ID de requête reçu");
-
+  
       console.log("Requete créée avec l'ID :", requeteId);
-
+  
       const result = await uploadImage(requeteId, selectedImage);
-
+  
       console.log("Résultat upload :", result);
-
+  
       setDescription(result.description || "Image bien envoyée");
-
+  
+      
+      window.dispatchEvent(new Event('historiqueUpdated'));
+  
     } catch (error) {
       console.error("Erreur handleSubmit :", error.message);
       setDescription("Erreur lors de l'envoi de l'image");
@@ -34,6 +36,7 @@ export default function CopilotHome() {
       setIsProcessing(false);
     }
   };
+  
 
   const welcomeMessages = [
     "Glissez-moi une image et je vous dirai ce que j'en pense 📷✨",
@@ -56,7 +59,7 @@ export default function CopilotHome() {
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100vh-80px)] text-center px-3 sm:px-4 w-full">
       {/* Container avec arrière-plan coloré */}
-      <div className="w-full max-w-xl sm:max-w-2xl bg-grey-500 bg-opacity-50 rounded-lg shadow-lg py-6 px-3 sm:px-4">
+      <div className="w-full max-w-xl sm:max-w-2xl bg-grey-500 bg-opacity-50 rounded-lg py-6 px-3 sm:px-4">
         {/* quand l'image est chargée */}
         {imagePreview ? (
           <div className="w-full">
@@ -96,15 +99,15 @@ export default function CopilotHome() {
                   <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                 </div>
-                <p className="text-sm sm:text-base text-gray-700 mt-2">Analyse de l'image en cours...</p>
+                <p className="text-sm sm:text-base text-white mt-2">Analyse de l'image en cours...</p>
               </div>
             )}
 
             {/* quand la description est générée */}
             {!isProcessing && description && (
               <div className="my-4 sm:my-6">
-                <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-800">Description générée</h2>
-                <p className="text-base sm:text-lg text-gray-700">{description}</p>
+                <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-white">Description générée</h2>
+                <p className="text-base sm:text-lg text-white">{description}</p>
                 <button
                   onClick={handleRemoveImage}
                   className="mt-4 px-3 sm:px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium sm:font-semibold text-sm sm:text-base"
