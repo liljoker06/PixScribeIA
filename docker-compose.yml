@@ -27,8 +27,10 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
-      - ia
+      db:
+        condition: service_healthy
+      ia:
+        condition: service_started
 
   ia:
     build:
@@ -50,6 +52,13 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
